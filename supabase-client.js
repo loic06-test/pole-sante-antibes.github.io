@@ -39,10 +39,12 @@
 
   // ---------- STORAGE ----------
   // Upload d'un blob/file. Retourne l'URL publique.
+  // cacheControl: 31536000 = 1 an. Les visiteurs ne re-télécharge le fichier
+  // qu'après 1 an (ou s'il change de nom). Énorme économie d'egress Supabase.
   async function uploadFile(folder, filename, blob) {
     const path = `${folder}/${Date.now()}_${filename}`;
     const { error } = await sb.storage.from(cfg.STORAGE_BUCKET).upload(path, blob, {
-      cacheControl: '3600',
+      cacheControl: '31536000',
       upsert: false,
       contentType: blob.type || 'application/octet-stream',
     });
